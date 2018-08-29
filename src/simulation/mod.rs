@@ -2,14 +2,14 @@ use opengl_graphics::{GlGraphics, GlyphCache};
 use piston_window::{clear, text, Button, Context, Key, PistonWindow, PressEvent, RenderEvent, Transformed, UpdateEvent};
 pub mod models;
 use config::color;
-use self::models::{city::City, individual::Individual, Drawable};
+use self::models::{location::Location, individual::Individual, Drawable};
 use ga;
 use utils;
 use population::Population;
 
 #[derive(Clone)]
 pub struct Simulation {
-    cities: Vec<City>,
+    cities: Vec<Location>,
     generation: u32,
     avg_fitness: f64,
     best_fitness: f64,
@@ -42,9 +42,9 @@ impl Simulation {
             if let Some(_args) = event.update_args() {
                 utils::debug("Next Generation");
 
-                self.generation += 1;
-                
-                {
+                if self.generation < 100 {
+                    self.generation += 1;
+
                     utils::debug("Get individuals of current population");
                     let mut individuals = self.population.get_individuals();
                     utils::debug("Evolve population");
@@ -75,8 +75,8 @@ impl Simulation {
 
     fn draw(&self, context: Context, graphics: &mut GlGraphics, glyph_cache: &mut GlyphCache) {
         clear(color::BLACK, graphics);
-        for city in &self.cities {
-            city.draw(context, graphics);
+        for location in &self.cities {
+            location.draw(context, graphics);
         }
 
         self.best_individual.draw(context, graphics);
@@ -111,26 +111,26 @@ impl Simulation {
 
     fn init(&mut self) {
         self.cities.clear();
-        self.cities.push(City { x: 60.0, y: 200.0 });
-        self.cities.push(City { x: 180.0, y: 200.0 });
-        self.cities.push(City { x: 80.0, y: 180.0 });
-        self.cities.push(City { x: 140.0, y: 180.0 });
-        self.cities.push(City { x: 20.0, y: 160.0 });
-        self.cities.push(City { x: 100.0, y: 160.0 });
-        self.cities.push(City { x: 200.0, y: 160.0 });
-        self.cities.push(City { x: 140.0, y: 140.0 });
-        self.cities.push(City { x: 40.0, y: 120.0 });
-        self.cities.push(City { x: 100.0, y: 120.0 });
-        self.cities.push(City { x: 180.0, y: 100.0 });
-        self.cities.push(City { x: 60.0, y: 80.0 });
-        self.cities.push(City { x: 120.0, y: 80.0 });
-        self.cities.push(City { x: 180.0, y: 60.0 });
-        self.cities.push(City { x: 20.0, y: 40.0 });
-        self.cities.push(City { x: 100.0, y: 40.0 });
-        self.cities.push(City { x: 200.0, y: 40.0 });
-        self.cities.push(City { x: 20.0, y: 20.0 });
-        self.cities.push(City { x: 60.0, y: 20.0 });
-        self.cities.push(City { x: 160.0, y: 20.0 });
+        self.cities.push(Location { x: 60.0, y: 200.0 });
+        self.cities.push(Location { x: 180.0, y: 200.0 });
+        self.cities.push(Location { x: 80.0, y: 180.0 });
+        self.cities.push(Location { x: 140.0, y: 180.0 });
+        self.cities.push(Location { x: 20.0, y: 160.0 });
+        self.cities.push(Location { x: 100.0, y: 160.0 });
+        self.cities.push(Location { x: 200.0, y: 160.0 });
+        self.cities.push(Location { x: 140.0, y: 140.0 });
+        self.cities.push(Location { x: 40.0, y: 120.0 });
+        self.cities.push(Location { x: 100.0, y: 120.0 });
+        self.cities.push(Location { x: 180.0, y: 100.0 });
+        self.cities.push(Location { x: 60.0, y: 80.0 });
+        self.cities.push(Location { x: 120.0, y: 80.0 });
+        self.cities.push(Location { x: 180.0, y: 60.0 });
+        self.cities.push(Location { x: 20.0, y: 40.0 });
+        self.cities.push(Location { x: 100.0, y: 40.0 });
+        self.cities.push(Location { x: 200.0, y: 40.0 });
+        self.cities.push(Location { x: 20.0, y: 20.0 });
+        self.cities.push(Location { x: 60.0, y: 20.0 });
+        self.cities.push(Location { x: 160.0, y: 20.0 });
 
         self.population.init(&self.cities);
         self.generation = 1;

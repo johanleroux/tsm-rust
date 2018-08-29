@@ -1,7 +1,7 @@
 extern crate rand;
 
 use config;
-use simulation::models::{city::City, individual::Individual};
+use simulation::models::{location::Location, individual::Individual};
 
 #[derive(Clone)]
 pub struct Population {
@@ -17,7 +17,7 @@ impl Population {
         }
     }
 
-    pub fn init(&mut self, cities: &Vec<City>) {
+    pub fn init(&mut self, cities: &Vec<Location>) {
         assert_eq!(self.individuals.len(), 0);
 
         for _ in 0..config::POP_SIZE {
