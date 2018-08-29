@@ -27,7 +27,7 @@ impl Drawable for City {
         rectangle(
             color::WHITE,
             CITY,
-            context.transform.trans(self.x, self.y),
+            context.transform.trans(self.x * 3.0, self.y * 3.0),
             graphics,
         )
     }

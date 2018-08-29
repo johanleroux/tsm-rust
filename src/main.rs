@@ -1,13 +1,17 @@
 extern crate opengl_graphics;
 extern crate piston_window;
+extern crate rand;
 extern crate num;
 
 use piston_window::{OpenGL, PistonWindow, WindowSettings};
 use opengl_graphics::GlGraphics;
 
 mod config;
+mod ga;
 mod menu;
 mod simulation;
+mod population;
+mod utils;
 
 fn main() {
     let title = "Travelling Salesman";
@@ -27,4 +31,5 @@ fn main() {
     let mut gl = GlGraphics::new(opengl);
 
     menu::run(&mut window, &mut gl);
+
 }
