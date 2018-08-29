@@ -1,0 +1,6 @@
+[package]
+name = "tsm-rust"
+version = "0.1.0"
+authors = ["Johan le Roux <jleroux99@gmail.com>"]
+
+[dependencies]
