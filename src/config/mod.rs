@@ -9,6 +9,6 @@ pub const WINDOW_SIZE : Size = Size {
 };
 
 
-pub const LOCATION_SIZE: usize = 20;
+pub const LOCATION_SIZE: usize = 30;
 pub const POP_SIZE: usize = 200;
 pub const MUTATION_RATE: f32 = 0.015;

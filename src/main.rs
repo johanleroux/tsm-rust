@@ -2,6 +2,7 @@ extern crate opengl_graphics;
 extern crate piston_window;
 extern crate rand;
 extern crate num;
+extern crate quickersort;
 
 use piston_window::{OpenGL, PistonWindow, WindowSettings};
 use opengl_graphics::GlGraphics;

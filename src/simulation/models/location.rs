@@ -35,7 +35,7 @@ impl Drawable for Location {
         rectangle(
             color::WHITE,
             LOCATION,
-            context.transform.trans(self.x * 3.0, self.y * 3.0),
+            context.transform.trans(self.x, self.y),
             graphics,
         )
     }

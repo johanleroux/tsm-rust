@@ -1,4 +1,5 @@
 extern crate rand;
+extern crate quickersort;
 
 use config;
 use simulation::models::{location::Location, individual::Individual};
@@ -51,6 +52,16 @@ impl Population {
 
     pub fn avg_fitness(&mut self) -> f64 {
         self.total_fitness / config::POP_SIZE as f64
+    }
+
+    pub fn median_fitness(&mut self) -> f64 {
+        let mut vals = Vec::new();
+        for i in 0..config::POP_SIZE {
+            vals.push(self.individuals[i].fitness);
+        }
+        quickersort::sort_floats(&mut vals[..]);
+
+        vals[config::POP_SIZE / 2 as usize]
     }
 
     pub fn get_individual(&mut self, index: usize) -> Individual {

@@ -7,17 +7,21 @@ use config;
 use config::color;
 use simulation::models::{location::Location, Drawable};
 
+const TRAVEL_RADIUS: f64 = 1.0;
+
 #[derive(Copy, Clone)]
 pub struct Individual {
     pub fitness: f64,
     locations: [Location; config::LOCATION_SIZE],
+    draw_secondary: bool
 }
 
 impl Individual {
     pub fn new() -> Individual {
         Individual {
             fitness: f64::MAX,
-            locations: [Location::new(); config::LOCATION_SIZE]
+            locations: [Location::new(); config::LOCATION_SIZE],
+            draw_secondary: false
         }
     }
 
@@ -108,6 +112,17 @@ impl Individual {
         }
     }
 
+    pub fn draw_x(self, x: f64, secondary: bool) -> f64 {
+        if secondary {
+            return (x) + (config::WINDOW_SIZE.width / 2) as f64
+        }
+        x
+    }
+
+    pub fn draw_y(self, y: f64) -> f64 {
+        y
+    }
+
     pub fn debug(&self) {
         for i in 0..config::LOCATION_SIZE {
             println!(
@@ -117,24 +132,21 @@ impl Individual {
             );
         }
     }
-}
 
-const TRAVEL_RADIUS: f64 = 1.0;
-impl Drawable for Individual {
-    fn draw(&self, context: Context, graphics: &mut GlGraphics) {
+    pub fn draw_secondary(&self, context: Context, graphics: &mut GlGraphics) {
         let mut from_location = self.locations[0];
         for i in 1..config::LOCATION_SIZE {
             let line_angle: types::Line = [
                 0.0,
                 0.0,
-                from_location.x * 3.0 - self.locations[i].x * 3.0, 
-                from_location.y * 3.0 - self.locations[i].y * 3.0
+                self.draw_x(from_location.x, true) - self.draw_x(self.locations[i].x, true), 
+                self.draw_y(from_location.y) - self.draw_y(self.locations[i].y), 
             ];
             line(
                 color::CYAN,
                 TRAVEL_RADIUS,
                 line_angle,
-                context.transform.trans(self.locations[i].x * 3.0, self.locations[i].y * 3.0),
+                context.transform.trans(self.draw_x(self.locations[i].x, true), self.draw_y(self.locations[i].y)),
                 graphics
             );
 
@@ -144,15 +156,52 @@ impl Drawable for Individual {
         let line_angle: types::Line = [
             0.0,
             0.0,
-            from_location.x * 3.0 - self.locations[0].x * 3.0, 
-            from_location.y * 3.0 - self.locations[0].y * 3.0
+            self.draw_x(from_location.x, true) - self.draw_x(self.locations[0].x, true),
+            self.draw_y(from_location.y) - self.draw_y(self.locations[0].y)
         ];
         line(
             color::CYAN,
             TRAVEL_RADIUS,
             line_angle,
-            context.transform.trans(self.locations[0].x * 3.0, self.locations[0].y * 3.0),
+            context.transform.trans(self.draw_x(self.locations[0].x, true), self.draw_y(self.locations[0].y)),
             graphics
-        );        
+        );
+    }
+}
+
+impl Drawable for Individual {
+    fn draw(&self, context: Context, graphics: &mut GlGraphics) {
+        let mut from_location = self.locations[0];
+        for i in 1..config::LOCATION_SIZE {
+            let line_angle: types::Line = [
+                0.0,
+                0.0,
+                self.draw_x(from_location.x, false) - self.draw_x(self.locations[i].x, false), 
+                self.draw_y(from_location.y) - self.draw_y(self.locations[i].y), 
+            ];
+            line(
+                color::CYAN,
+                TRAVEL_RADIUS,
+                line_angle,
+                context.transform.trans(self.draw_x(self.locations[i].x, false), self.draw_y(self.locations[i].y)),
+                graphics
+            );
+
+            from_location = self.locations[i];
+        }
+
+        let line_angle: types::Line = [
+            0.0,
+            0.0,
+            self.draw_x(from_location.x, false) - self.draw_x(self.locations[0].x, false),
+            self.draw_y(from_location.y) - self.draw_y(self.locations[0].y)
+        ];
+        line(
+            color::CYAN,
+            TRAVEL_RADIUS,
+            line_angle,
+            context.transform.trans(self.draw_x(self.locations[0].x, false), self.draw_y(self.locations[0].y)),
+            graphics
+        );
     }
 }
