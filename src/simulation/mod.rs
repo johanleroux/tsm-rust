@@ -16,7 +16,8 @@ pub struct Simulation {
     avg_fitness: f64,
     best_fitness: f64,
     best_individual: Individual,
-    population: Population
+    population: Population,
+    stuck_generations: u32
 }
 
 impl Simulation {
@@ -27,7 +28,8 @@ impl Simulation {
             avg_fitness: 0.0,
             best_fitness: 0.0,
             best_individual: Individual::new(),
-            population: Population::new()
+            population: Population::new(),
+            stuck_generations: 0
         }
     }
 
@@ -42,7 +44,7 @@ impl Simulation {
             }
 
             if let Some(_args) = event.update_args() {
-                if self.generation < 100 {
+                if self.stuck_generations < 25 {
                     self.generation += 1;
 
                     let mut individuals = self.population.get_individuals();
@@ -51,6 +53,13 @@ impl Simulation {
                     self.population.fitness();
 
                     self.best_individual = self.population.fittest();
+
+                    if self.best_fitness == self.best_individual.fitness {
+                        self.stuck_generations += 1
+                    } else {
+                        self.stuck_generations = 0
+                    }
+
                     self.best_fitness = self.best_individual.fitness;
                     self.avg_fitness = self.population.avg_fitness();
 
