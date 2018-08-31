@@ -41,19 +41,65 @@ fn draw(context: Context, graphics: &mut GlGraphics, font: &mut GlyphCache, menu
             config::SelectionAlgorithm::Tournament => {
                 rectangle(
                     color::RED,
-                    [0.0, 0.0, 185.0, 40.0],
-                    context.transform.trans(293.0, 242.0),
+                    [0.0, 0.0, 185.0, 36.0],
+                    context.transform.trans(293.0, 243.0),
                     graphics,
                 );
             },
             config::SelectionAlgorithm::Roulette => {
                 rectangle(
                     color::RED,
-                    [0.0, 0.0, 133.0, 40.0],
-                    context.transform.trans(493.0, 242.0),
+                    [0.0, 0.0, 133.0, 36.0],
+                    context.transform.trans(493.0, 243.0),
                     graphics,
                 )
             }
+            config::SelectionAlgorithm::Random => {
+                rectangle(
+                    color::RED,
+                    [0.0, 0.0, 132.0, 36.0],
+                    context.transform.trans(643.0, 243.0),
+                    graphics,
+                )
+            }
+        }
+    }
+
+    unsafe {
+        match config::ELITISM {
+            1 => {
+                rectangle(
+                    color::RED,
+                    [0.0, 0.0, 53.0, 36.0],
+                    context.transform.trans(293.0, 283.0),
+                    graphics,
+                );
+            },
+            2 => {
+                rectangle(
+                    color::RED,
+                    [0.0, 0.0, 53.0, 36.0],
+                    context.transform.trans(350.0, 283.0),
+                    graphics,
+                );
+            },
+            5 => {
+                rectangle(
+                    color::RED,
+                    [0.0, 0.0, 53.0, 36.0],
+                    context.transform.trans(407.0, 283.0),
+                    graphics,
+                );
+            },
+            10 => {
+                rectangle(
+                    color::RED,
+                    [0.0, 0.0, 68.0, 36.0],
+                    context.transform.trans(464.0, 283.0),
+                    graphics,
+                );
+            }
+            _ => {}
         }
     } 
 
@@ -80,6 +126,66 @@ fn draw(context: Context, graphics: &mut GlGraphics, font: &mut GlyphCache, menu
         ),
         graphics,
     ).unwrap();
+
+    text(
+        color::WHITE,
+        font::SIZE,
+        "Random",
+        font,
+        context.transform.trans(
+            650.0,
+            272.0,
+        ),
+        graphics,
+    ).unwrap();
+
+    text(
+        color::WHITE,
+        font::SIZE,
+        "1%",
+        font,
+        context.transform.trans(
+            300.0,
+            312.0,
+        ),
+        graphics,
+    ).unwrap();
+
+    text(
+        color::WHITE,
+        font::SIZE,
+        "2%",
+        font,
+        context.transform.trans(
+            356.0,
+            312.0,
+        ),
+        graphics,
+    ).unwrap();
+
+    text(
+        color::WHITE,
+        font::SIZE,
+        "5%",
+        font,
+        context.transform.trans(
+            413.0,
+            312.0,
+        ),
+        graphics,
+    ).unwrap();
+
+    text(
+        color::WHITE,
+        font::SIZE,
+        "10%",
+        font,
+        context.transform.trans(
+            470.0,
+            312.0,
+        ),
+        graphics,
+    ).unwrap();
 }
 
 pub fn run(mut window: &mut PistonWindow, mut opengl: &mut GlGraphics) {
@@ -93,6 +199,7 @@ pub fn run(mut window: &mut PistonWindow, mut opengl: &mut GlGraphics) {
     menu_lines.clear();
     menu_lines.push(String::from("Simulate"));
     menu_lines.push(String::from("Selection"));
+    menu_lines.push(String::from("Elitism"));
     menu_lines.push(String::from("Exit"));
 
     while let Some(event) = window.next() {
@@ -118,11 +225,23 @@ pub fn run(mut window: &mut PistonWindow, mut opengl: &mut GlGraphics) {
                             unsafe {
                                 match config::SELECTION_ALGORITHM_X {
                                     config::SelectionAlgorithm::Tournament => config::SELECTION_ALGORITHM_X = config::SelectionAlgorithm::Roulette,
-                                    config::SelectionAlgorithm::Roulette => config::SELECTION_ALGORITHM_X = config::SelectionAlgorithm::Tournament
+                                    config::SelectionAlgorithm::Roulette => config::SELECTION_ALGORITHM_X = config::SelectionAlgorithm::Random,
+                                    config::SelectionAlgorithm::Random => config::SELECTION_ALGORITHM_X = config::SelectionAlgorithm::Tournament
                                 }
                             }
                         },
-                        2 => break,
+                        2 => {
+                            unsafe {
+                                match config::ELITISM {
+                                    1 => config::ELITISM = 2,
+                                    2 => config::ELITISM = 5,
+                                    5 => config::ELITISM = 10,
+                                    10 => config::ELITISM = 1,
+                                    _ => config::ELITISM = 1
+                                }
+                            }
+                        },
+                        3 => break,
                         _ => {},
                     }
                 },

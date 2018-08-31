@@ -18,7 +18,9 @@ pub const POP_SIZE: usize = 200;
 
 pub enum SelectionAlgorithm {
     Tournament,
-    Roulette
+    Roulette,
+    Random
 }
-
 pub static mut SELECTION_ALGORITHM_X: SelectionAlgorithm = SelectionAlgorithm::Tournament;
+
+pub static mut ELITISM: usize = 1;

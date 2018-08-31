@@ -112,6 +112,30 @@ impl Simulation {
             context.transform.trans(20.0, 80.0),
             graphics,
         ).unwrap();
+
+        let selection: String;
+        unsafe {
+            match config::SELECTION_ALGORITHM_X {
+                config::SelectionAlgorithm::Tournament => {
+                    selection = "Tournament".to_string();
+                },
+                config::SelectionAlgorithm::Roulette => {
+                    selection = "Roulette".to_string();
+                }
+                config::SelectionAlgorithm::Random => {
+                    selection = "Random".to_string();
+                }
+            }
+        } 
+
+        text(
+            color::WHITE,
+            20,
+            format!("Selection: {}", selection).as_str(),
+            glyph_cache,
+            context.transform.trans(20.0, 100.0),
+            graphics,
+        ).unwrap();
     }
 
     fn init(&mut self) {

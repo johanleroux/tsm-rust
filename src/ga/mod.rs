@@ -14,8 +14,15 @@ impl GA {
         let mut pop: Population = Population::new();
         let mut individuals: Vec<Individual> = Vec::new();
 
+        unsafe {
+            if config::ELITISM > 0 {
+                individuals.clear();
+                individuals = Select::elitism(&old_individuals, (config::POP_SIZE as f64 * (config::ELITISM as f64 / 100.0)) as usize);
+            }
+        }
+
         utils::debug("Loop through population for crossover");
-        for _ in 0..config::POP_SIZE {
+        loop {
             let p1: Individual;
             let p2: Individual;
 
@@ -28,6 +35,11 @@ impl GA {
                     config::SelectionAlgorithm::Roulette => {
                         p1 = Select::roulette(&old_individuals);
                         p2 = Select::roulette(&old_individuals);
+                    },
+                    config::SelectionAlgorithm::Random => {
+                        let tmp: Individual = Individual::new();
+                        p1 = Select::random(&old_individuals, tmp);
+                        p2 = Select::random(&old_individuals, p1);
                     }
                 }
             }
@@ -35,6 +47,10 @@ impl GA {
             utils::debug("Do crossover for {} individual");
             let child: Individual = GA::crossover(p1, p2);
             individuals.push(child);
+
+            if individuals.len() == config::POP_SIZE {
+                break;
+            }
         }
         utils::debug("Set new population");
         pop.set_individuals(individuals);

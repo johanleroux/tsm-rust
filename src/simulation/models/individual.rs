@@ -85,6 +85,23 @@ impl Individual {
         false
     }
 
+    pub fn same_individual(&self, other: Individual) -> bool {
+        if self.fitness != other.fitness {
+            return false
+        }
+
+        for i in 0..config::LOCATION_SIZE {
+            if (self.locations[i].x == other.locations[i].x) &&
+               (self.locations[i].y == other.locations[i].y)
+                {
+                    
+                    return false
+                }
+        }
+
+        return true
+    }
+
     pub fn validate(&self) {
         if !config::DEBUG {
             return
