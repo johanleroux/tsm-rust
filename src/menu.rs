@@ -1,6 +1,7 @@
 use opengl_graphics::{GlGraphics, GlyphCache};
-use piston_window::{clear, text, Button, Context, Key, PistonWindow, PressEvent, RenderEvent, TextureSettings, Transformed};
+use piston_window::{clear, text, rectangle, Button, Context, Key, PistonWindow, PressEvent, RenderEvent, TextureSettings, Transformed};
 
+use config;
 use config::{color, font};
 use num;
 use simulation;
@@ -34,6 +35,51 @@ fn draw(context: Context, graphics: &mut GlGraphics, font: &mut GlyphCache, menu
             graphics,
         ).unwrap();
     }
+
+    unsafe {
+        match config::SELECTION_ALGORITHM_X {
+            config::SelectionAlgorithm::Tournament => {
+                rectangle(
+                    color::RED,
+                    [0.0, 0.0, 185.0, 40.0],
+                    context.transform.trans(293.0, 242.0),
+                    graphics,
+                );
+            },
+            config::SelectionAlgorithm::Roulette => {
+                rectangle(
+                    color::RED,
+                    [0.0, 0.0, 133.0, 40.0],
+                    context.transform.trans(493.0, 242.0),
+                    graphics,
+                )
+            }
+        }
+    } 
+
+    text(
+        color::WHITE,
+        font::SIZE,
+        "Tournament",
+        font,
+        context.transform.trans(
+            300.0,
+            272.0,
+        ),
+        graphics,
+    ).unwrap();
+
+    text(
+        color::WHITE,
+        font::SIZE,
+        "Roulette",
+        font,
+        context.transform.trans(
+            500.0,
+            272.0,
+        ),
+        graphics,
+    ).unwrap();
 }
 
 pub fn run(mut window: &mut PistonWindow, mut opengl: &mut GlGraphics) {
@@ -46,7 +92,7 @@ pub fn run(mut window: &mut PistonWindow, mut opengl: &mut GlGraphics) {
     let mut menu_lines: Vec<String> = vec![String::new()];
     menu_lines.clear();
     menu_lines.push(String::from("Simulate"));
-    menu_lines.push(String::from("Settings"));
+    menu_lines.push(String::from("Selection"));
     menu_lines.push(String::from("Exit"));
 
     while let Some(event) = window.next() {
@@ -68,7 +114,14 @@ pub fn run(mut window: &mut PistonWindow, mut opengl: &mut GlGraphics) {
                             
                             simulation.run(&mut window, &mut opengl, &mut font);
                         },
-                        1 => {},
+                        1 => {
+                            unsafe {
+                                match config::SELECTION_ALGORITHM_X {
+                                    config::SelectionAlgorithm::Tournament => config::SELECTION_ALGORITHM_X = config::SelectionAlgorithm::Roulette,
+                                    config::SelectionAlgorithm::Roulette => config::SELECTION_ALGORITHM_X = config::SelectionAlgorithm::Tournament
+                                }
+                            }
+                        },
                         2 => break,
                         _ => {},
                     }

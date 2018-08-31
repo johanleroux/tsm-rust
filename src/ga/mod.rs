@@ -16,8 +16,21 @@ impl GA {
 
         utils::debug("Loop through population for crossover");
         for _ in 0..config::POP_SIZE {
-            let p1: Individual = Select::tour(&old_individuals);
-            let p2: Individual = Select::tour(&old_individuals);
+            let p1: Individual;
+            let p2: Individual;
+
+            unsafe {
+                match config::SELECTION_ALGORITHM_X {
+                    config::SelectionAlgorithm::Tournament => {
+                        p1 = Select::tour(&old_individuals);
+                        p2 = Select::tour(&old_individuals);
+                    },
+                    config::SelectionAlgorithm::Roulette => {
+                        p1 = Select::roulette(&old_individuals);
+                        p2 = Select::roulette(&old_individuals);
+                    }
+                }
+            }
 
             utils::debug("Do crossover for {} individual");
             let child: Individual = GA::crossover(p1, p2);
