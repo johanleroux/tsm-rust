@@ -12,16 +12,14 @@ const TRAVEL_RADIUS: f64 = 1.0;
 #[derive(Copy, Clone)]
 pub struct Individual {
     pub fitness: f64,
-    locations: [Location; config::LOCATION_SIZE],
-    draw_secondary: bool
+    locations: [Location; config::LOCATION_SIZE]
 }
 
 impl Individual {
     pub fn new() -> Individual {
         Individual {
             fitness: f64::MAX,
-            locations: [Location::new(); config::LOCATION_SIZE],
-            draw_secondary: false
+            locations: [Location::new(); config::LOCATION_SIZE]
         }
     }
 
@@ -87,17 +85,11 @@ impl Individual {
         false
     }
 
-    pub fn swap_location(&mut self, index: usize, location: Location) {
-        for i in 0..config::LOCATION_SIZE {
-            if self.get_location(i).x == location.x && self.get_location(i).y == location.y {
-                self.locations[i] = self.locations[index];
-            }
+    pub fn validate(&self) {
+        if !config::DEBUG {
+            return
         }
 
-        self.locations[index] = location;
-    }
-
-    pub fn validate(&self) {
         for i in 0..config::LOCATION_SIZE {
             for u in 0..config::LOCATION_SIZE {
                 if 
@@ -112,17 +104,6 @@ impl Individual {
         }
     }
 
-    pub fn draw_x(self, x: f64, secondary: bool) -> f64 {
-        if secondary {
-            return (x) + (config::WINDOW_SIZE.width / 2) as f64
-        }
-        x
-    }
-
-    pub fn draw_y(self, y: f64) -> f64 {
-        y
-    }
-
     pub fn debug(&self) {
         for i in 0..config::LOCATION_SIZE {
             println!(
@@ -132,58 +113,25 @@ impl Individual {
             );
         }
     }
-
-    pub fn draw_secondary(&self, context: Context, graphics: &mut GlGraphics) {
-        let mut from_location = self.locations[0];
-        for i in 1..config::LOCATION_SIZE {
-            let line_angle: types::Line = [
-                0.0,
-                0.0,
-                self.draw_x(from_location.x, true) - self.draw_x(self.locations[i].x, true), 
-                self.draw_y(from_location.y) - self.draw_y(self.locations[i].y), 
-            ];
-            line(
-                color::CYAN,
-                TRAVEL_RADIUS,
-                line_angle,
-                context.transform.trans(self.draw_x(self.locations[i].x, true), self.draw_y(self.locations[i].y)),
-                graphics
-            );
-
-            from_location = self.locations[i];
-        }
-
-        let line_angle: types::Line = [
-            0.0,
-            0.0,
-            self.draw_x(from_location.x, true) - self.draw_x(self.locations[0].x, true),
-            self.draw_y(from_location.y) - self.draw_y(self.locations[0].y)
-        ];
-        line(
-            color::CYAN,
-            TRAVEL_RADIUS,
-            line_angle,
-            context.transform.trans(self.draw_x(self.locations[0].x, true), self.draw_y(self.locations[0].y)),
-            graphics
-        );
-    }
 }
 
 impl Drawable for Individual {
     fn draw(&self, context: Context, graphics: &mut GlGraphics) {
         let mut from_location = self.locations[0];
+        let offset = 3.0;
+
         for i in 1..config::LOCATION_SIZE {
             let line_angle: types::Line = [
                 0.0,
                 0.0,
-                self.draw_x(from_location.x, false) - self.draw_x(self.locations[i].x, false), 
-                self.draw_y(from_location.y) - self.draw_y(self.locations[i].y), 
+                from_location.x - self.locations[i].x, 
+                from_location.y - self.locations[i].y, 
             ];
             line(
-                color::CYAN,
+                color::WHITE,
                 TRAVEL_RADIUS,
                 line_angle,
-                context.transform.trans(self.draw_x(self.locations[i].x, false), self.draw_y(self.locations[i].y)),
+                context.transform.trans(self.locations[i].x + offset, self.locations[i].y + offset),
                 graphics
             );
 
@@ -193,14 +141,14 @@ impl Drawable for Individual {
         let line_angle: types::Line = [
             0.0,
             0.0,
-            self.draw_x(from_location.x, false) - self.draw_x(self.locations[0].x, false),
-            self.draw_y(from_location.y) - self.draw_y(self.locations[0].y)
+            from_location.x - self.locations[0].x,
+            from_location.y - self.locations[0].y
         ];
         line(
-            color::CYAN,
+            color::WHITE,
             TRAVEL_RADIUS,
             line_angle,
-            context.transform.trans(self.draw_x(self.locations[0].x, false), self.draw_y(self.locations[0].y)),
+            context.transform.trans(self.locations[0].x + offset, self.locations[0].y + offset),
             graphics
         );
     }

@@ -4,6 +4,7 @@ use rand::prelude::*;
 use config;
 use utils;
 mod select;
+use self::select::Select;
 
 pub struct GA;
 
@@ -12,12 +13,11 @@ impl GA {
         utils::debug("Initialize Variables");
         let mut pop: Population = Population::new();
         let mut individuals: Vec<Individual> = Vec::new();
-        let mut rng = thread_rng();
 
         utils::debug("Loop through population for crossover");
         for _ in 0..config::POP_SIZE {
-            let p1: Individual = select::select::tour(&old_individuals);
-            let p2: Individual = select::select::tour(&old_individuals);
+            let p1: Individual = Select::tour(&old_individuals);
+            let p2: Individual = Select::tour(&old_individuals);
 
             utils::debug("Do crossover for {} individual");
             let child: Individual = GA::crossover(p1, p2);

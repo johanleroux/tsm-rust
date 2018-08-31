@@ -33,7 +33,7 @@ impl Drawable for Location {
         const LOCATION: types::Rectangle = [0.0, 0.0, LOCATION_DIAMETER, LOCATION_DIAMETER];
 
         rectangle(
-            color::WHITE,
+            color::RED,
             LOCATION,
             context.transform.trans(self.x, self.y),
             graphics,
