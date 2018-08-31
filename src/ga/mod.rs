@@ -22,6 +22,20 @@ impl GA {
         }
 
         utils::debug("Loop through population for crossover");
+        let mut min_fitness = old_individuals[0].fitness;
+        unsafe {
+            match config::SELECTION_ALGORITHM_X {
+                config::SelectionAlgorithm::Roulette => {
+                    for i in 1..config::POP_SIZE {
+                        if min_fitness > old_individuals[i].fitness {
+                            min_fitness = old_individuals[i].fitness
+                        }
+                    }
+                },
+                _ => {}
+            }
+        }
+
         loop {
             let p1: Individual;
             let p2: Individual;
@@ -33,8 +47,8 @@ impl GA {
                         p2 = Select::tour(&old_individuals);
                     },
                     config::SelectionAlgorithm::Roulette => {
-                        p1 = Select::roulette(&old_individuals);
-                        p2 = Select::roulette(&old_individuals);
+                        p1 = Select::roulette(&old_individuals, min_fitness);
+                        p2 = Select::roulette(&old_individuals, min_fitness);
                     },
                     config::SelectionAlgorithm::Random => {
                         let tmp: Individual = Individual::new();
