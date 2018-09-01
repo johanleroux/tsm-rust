@@ -23,11 +23,11 @@ impl Individual {
         }
     }
 
-    pub fn init(&mut self, cities: &Vec<Location>) {
-        assert_eq!(cities.len(), config::LOCATION_SIZE);
+    pub fn init(&mut self, locations: &Vec<Location>) {
+        assert_eq!(locations.len(), config::LOCATION_SIZE);
         let mut rng = thread_rng();
 
-        self.set_locations(cities);
+        self.set_locations(locations);
 
         for _ in 0..100 {
             for c in 0..config::LOCATION_SIZE {

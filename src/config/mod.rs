@@ -9,12 +9,13 @@ pub const WINDOW_SIZE: Size = Size {
 };
 
 pub const DEBUG: bool = false;
-pub const FILE_PATH: &str = "target/results.csv";
+
+pub const TEST_DATA: bool = true;
 
 pub const MUTATION_RATE: f32 = 0.015;
 
-pub const LOCATION_SIZE: usize = 20;
-pub const POP_SIZE: usize = 200;
+pub const LOCATION_SIZE: usize = 100;
+pub const POP_SIZE: usize = 300;
 
 pub enum SelectionAlgorithm {
     Tournament,

@@ -18,12 +18,12 @@ impl Population {
         }
     }
 
-    pub fn init(&mut self, cities: &Vec<Location>) {
+    pub fn init(&mut self, locations: &Vec<Location>) {
         assert_eq!(self.individuals.len(), 0);
 
         for _ in 0..config::POP_SIZE {
             let mut individual = Individual::new();
-            individual.init(&cities);
+            individual.init(&locations);
             self.individuals.push(individual);
         }
 

@@ -14,7 +14,7 @@ use utils;
 
 #[derive(Clone)]
 pub struct Simulation {
-    cities: Vec<Location>,
+    locations: Vec<Location>,
     generation: u32,
     avg_fitness: f64,
     best_fitness: f64,
@@ -26,7 +26,7 @@ pub struct Simulation {
 impl Simulation {
     pub fn new() -> Self {
         Simulation {
-            cities: Vec::new(),
+            locations: Vec::new(),
             generation: 1,
             avg_fitness: 0.0,
             best_fitness: 0.0,
@@ -58,10 +58,10 @@ impl Simulation {
         }
         window.set_event_settings(settings);
 
-        println!("Max FPS: {} ", window.get_event_settings().max_fps);
-        println!("UPS: {} ", window.get_event_settings().ups);
-        println!("UPS Reset: {} ", window.get_event_settings().ups_reset);
-        println!("Bench Mode: {} ", window.get_event_settings().bench_mode);
+        // println!("Max FPS: {} ", window.get_event_settings().max_fps);
+        // println!("UPS: {} ", window.get_event_settings().ups);
+        // println!("UPS Reset: {} ", window.get_event_settings().ups_reset);
+        // println!("Bench Mode: {} ", window.get_event_settings().bench_mode);
 
         self.init();
 
@@ -117,7 +117,7 @@ impl Simulation {
 
         self.best_individual.draw(context, graphics);
 
-        for location in &self.cities {
+        for location in &self.locations {
             location.draw(context, graphics);
         }
 
@@ -226,21 +226,27 @@ impl Simulation {
     }
 
     fn init(&mut self) {
-        self.cities.clear();
+        self.locations.clear();
 
-        let mut rng = thread_rng();
-        loop {
-            let r_x: f64 = rng.gen_range(0, config::WINDOW_SIZE.width) as f64;
-            let r_y: f64 = rng.gen_range(0, config::WINDOW_SIZE.height) as f64;
+        if config::TEST_DATA {
+            self.locations = utils::test_data();
+        } else {
+            let mut rng = thread_rng();
+            loop {
+                let r_x: f64 = rng.gen_range(0, config::WINDOW_SIZE.width) as f64;
+                let r_y: f64 = rng.gen_range(0, config::WINDOW_SIZE.height) as f64;
 
-            if r_x < 225.0 && r_y < 215.0 {
-                continue;
-            }
+                if r_x < 225.0 && r_y < 215.0 {
+                    continue;
+                }
 
-            self.cities.push(Location { x: r_x, y: r_y });
+                self.locations.push(Location { x: r_x, y: r_y });
 
-            if self.cities.len() == config::LOCATION_SIZE {
-                break;
+                // println!("x: {}, y: {}", r_x, r_y);
+
+                if self.locations.len() == config::LOCATION_SIZE {
+                    break;
+                }
             }
         }
 
@@ -249,7 +255,7 @@ impl Simulation {
         utils::write_to_file(line, false);
 
         self.generation = 1;
-        self.population.init(&self.cities);
+        self.population.init(&self.locations);
         self.best_individual = self.population.fittest();
         self.best_fitness = self.best_individual.fitness;
         self.avg_fitness = self.population.avg_fitness();
