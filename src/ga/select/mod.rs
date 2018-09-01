@@ -11,6 +11,12 @@ impl Select {
 
         for _ in 1..config::POP_SIZE {
             let mut tmp = individuals[rng.gen_range(0, config::POP_SIZE - 1)];
+            loop {
+                if !tmp.same_individual(candidate) {
+                    break;
+                }
+                tmp = individuals[rng.gen_range(0, config::POP_SIZE - 1)];
+            }
             
             if tmp.fitness() < candidate.fitness() {
                 candidate = tmp;

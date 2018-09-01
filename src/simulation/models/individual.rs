@@ -43,6 +43,10 @@ impl Individual {
     }
 
     pub fn fitness(&mut self) -> f64{
+        if self.fitness != f64::MAX {
+            return self.fitness
+        }
+
         let mut distance: f64 = 0.0;
 
         for i in 0..config::LOCATION_SIZE {
