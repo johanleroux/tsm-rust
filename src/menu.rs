@@ -67,7 +67,7 @@ fn draw(context: Context, graphics: &mut GlGraphics, font: &mut GlyphCache, menu
 
     unsafe {
         match config::ELITISM {
-            1 => {
+            0 => {
                 rectangle(
                     color::RED,
                     [0.0, 0.0, 53.0, 36.0],
@@ -75,7 +75,7 @@ fn draw(context: Context, graphics: &mut GlGraphics, font: &mut GlyphCache, menu
                     graphics,
                 );
             },
-            2 => {
+            1 => {
                 rectangle(
                     color::RED,
                     [0.0, 0.0, 53.0, 36.0],
@@ -83,7 +83,7 @@ fn draw(context: Context, graphics: &mut GlGraphics, font: &mut GlyphCache, menu
                     graphics,
                 );
             },
-            5 => {
+            2 => {
                 rectangle(
                     color::RED,
                     [0.0, 0.0, 53.0, 36.0],
@@ -91,15 +91,44 @@ fn draw(context: Context, graphics: &mut GlGraphics, font: &mut GlyphCache, menu
                     graphics,
                 );
             },
+            5 => {
+                rectangle(
+                    color::RED,
+                    [0.0, 0.0, 53.0, 36.0],
+                    context.transform.trans(464.0, 283.0),
+                    graphics,
+                );
+            },
             10 => {
                 rectangle(
                     color::RED,
                     [0.0, 0.0, 68.0, 36.0],
-                    context.transform.trans(464.0, 283.0),
+                    context.transform.trans(521.0, 283.0),
                     graphics,
                 );
             }
             _ => {}
+        }
+    } 
+
+    unsafe {
+        match config::BENCH_MODE {
+            true => {
+                rectangle(
+                    color::RED,
+                    [0.0, 0.0, 72.0, 36.0],
+                    context.transform.trans(293.0, 323.0),
+                    graphics,
+                );
+            },
+            false => {
+                rectangle(
+                    color::RED,
+                    [0.0, 0.0, 80.0, 36.0],
+                    context.transform.trans(370.0, 323.0),
+                    graphics,
+                );
+            }
         }
     } 
 
@@ -142,7 +171,7 @@ fn draw(context: Context, graphics: &mut GlGraphics, font: &mut GlyphCache, menu
     text(
         color::WHITE,
         font::SIZE,
-        "1%",
+        "0%",
         font,
         context.transform.trans(
             300.0,
@@ -154,7 +183,7 @@ fn draw(context: Context, graphics: &mut GlGraphics, font: &mut GlyphCache, menu
     text(
         color::WHITE,
         font::SIZE,
-        "2%",
+        "1%",
         font,
         context.transform.trans(
             356.0,
@@ -166,7 +195,7 @@ fn draw(context: Context, graphics: &mut GlGraphics, font: &mut GlyphCache, menu
     text(
         color::WHITE,
         font::SIZE,
-        "5%",
+        "2%",
         font,
         context.transform.trans(
             413.0,
@@ -178,11 +207,47 @@ fn draw(context: Context, graphics: &mut GlGraphics, font: &mut GlyphCache, menu
     text(
         color::WHITE,
         font::SIZE,
-        "10%",
+        "5%",
         font,
         context.transform.trans(
             470.0,
             312.0,
+        ),
+        graphics,
+    ).unwrap();
+
+    text(
+        color::WHITE,
+        font::SIZE,
+        "10%",
+        font,
+        context.transform.trans(
+            527.0,
+            312.0,
+        ),
+        graphics,
+    ).unwrap();
+
+    text(
+        color::WHITE,
+        font::SIZE,
+        "true",
+        font,
+        context.transform.trans(
+            300.0,
+            352.0,
+        ),
+        graphics,
+    ).unwrap();
+
+    text(
+        color::WHITE,
+        font::SIZE,
+        "false",
+        font,
+        context.transform.trans(
+            375.0,
+            352.0,
         ),
         graphics,
     ).unwrap();
@@ -200,6 +265,7 @@ pub fn run(mut window: &mut PistonWindow, mut opengl: &mut GlGraphics) {
     menu_lines.push(String::from("Simulate"));
     menu_lines.push(String::from("Selection"));
     menu_lines.push(String::from("Elitism"));
+    menu_lines.push(String::from("Bench Mode"));
     menu_lines.push(String::from("Exit"));
 
     while let Some(event) = window.next() {
@@ -233,15 +299,24 @@ pub fn run(mut window: &mut PistonWindow, mut opengl: &mut GlGraphics) {
                         2 => {
                             unsafe {
                                 match config::ELITISM {
+                                    0 => config::ELITISM = 1,
                                     1 => config::ELITISM = 2,
                                     2 => config::ELITISM = 5,
                                     5 => config::ELITISM = 10,
-                                    10 => config::ELITISM = 1,
-                                    _ => config::ELITISM = 1
+                                    10 => config::ELITISM = 0,
+                                    _ => config::ELITISM = 0
                                 }
                             }
                         },
-                        3 => break,
+                        3 => {
+                            unsafe {
+                                match config::BENCH_MODE {
+                                    true => config::BENCH_MODE = false,
+                                    false => config::BENCH_MODE = true,
+                                }
+                            }
+                        },
+                        4 => break,
                         _ => {},
                     }
                 },

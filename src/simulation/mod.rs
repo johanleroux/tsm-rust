@@ -1,5 +1,5 @@
 use opengl_graphics::{GlGraphics, GlyphCache};
-use piston_window::{clear, text, Button, Context, Key, PistonWindow, PressEvent, RenderEvent, Transformed, UpdateEvent};
+use piston_window::{clear, text, rectangle, Button, Context, Key, PistonWindow, EventLoop, EventSettings, PressEvent, RenderEvent, Transformed, UpdateEvent};
 use rand::prelude::*;
 pub mod models;
 use config::color;
@@ -34,6 +34,30 @@ impl Simulation {
     }
 
     pub fn run(&mut self, window: &mut PistonWindow, opengl: &mut GlGraphics, glyph_cache: &mut GlyphCache) {
+        let mut settings: EventSettings = EventSettings::new();
+        unsafe {
+            if config::BENCH_MODE {
+                settings.set_max_fps(128);
+                settings.set_ups(128);
+                settings.set_ups_reset(0);
+                settings.set_bench_mode(true);
+            } else {
+                settings.set_max_fps(64);
+                settings.set_ups(64);
+                settings.set_ups_reset(2);
+                settings.set_bench_mode(false);
+            }
+
+        }
+        window.set_event_settings(
+            settings
+        );
+
+        println!("Max FPS: {} ", window.get_event_settings().max_fps);
+        println!("UPS: {} ", window.get_event_settings().ups);
+        println!("UPS Reset: {} ", window.get_event_settings().ups_reset);
+        println!("Bench Mode: {} ", window.get_event_settings().bench_mode);
+
         self.init();
 
         while let Some(event) = window.next() {
@@ -86,12 +110,19 @@ impl Simulation {
             location.draw(context, graphics);
         }
 
+        rectangle(
+            [0.0, 0.0, 0.0, 0.5],
+            [0.0, 0.0, 225.0, 215.0],
+            context.transform.trans(0.0, 0.0),
+            graphics,
+        );
+
         text(
             color::WHITE,
             20,
             format!("Generation: {}", self.generation).as_str(),
             glyph_cache,
-            context.transform.trans(20.0, 40.0),
+            context.transform.trans(10.0, 25.0),
             graphics,
         ).unwrap();
 
@@ -100,7 +131,7 @@ impl Simulation {
             20,
             format!("Avg Fitness: {0:.02}", self.avg_fitness).as_str(),
             glyph_cache,
-            context.transform.trans(20.0, 60.0),
+            context.transform.trans(10.0, 45.0),
             graphics,
         ).unwrap();
 
@@ -109,7 +140,7 @@ impl Simulation {
             20,
             format!("Best Fitness: {0:.02}", self.best_fitness).as_str(),
             glyph_cache,
-            context.transform.trans(20.0, 80.0),
+            context.transform.trans(10.0, 65.0),
             graphics,
         ).unwrap();
 
@@ -126,14 +157,59 @@ impl Simulation {
                     selection = "Random".to_string();
                 }
             }
-        } 
+        }
 
         text(
             color::WHITE,
             20,
             format!("Selection: {}", selection).as_str(),
             glyph_cache,
-            context.transform.trans(20.0, 100.0),
+            context.transform.trans(10.0, 95.0),
+            graphics,
+        ).unwrap();
+        unsafe {
+            text(
+                color::WHITE,
+                20,
+                format!("Elitism: {}%", config::ELITISM).as_str(),
+                glyph_cache,
+                context.transform.trans(10.0, 115.0),
+                graphics,
+            ).unwrap();
+        }
+        unsafe {
+            text(
+                color::WHITE,
+                20,
+                format!("Bench Mode: {}", config::BENCH_MODE).as_str(),
+                glyph_cache,
+                context.transform.trans(10.0, 135.0),
+                graphics,
+            ).unwrap();
+        }
+
+        text(
+            color::WHITE,
+            20,
+            format!("Location Count: {}", config::LOCATION_SIZE).as_str(),
+            glyph_cache,
+            context.transform.trans(10.0, 165.0),
+            graphics,
+        ).unwrap();
+        text(
+            color::WHITE,
+            20,
+            format!("Population Size: {}", config::POP_SIZE).as_str(),
+            glyph_cache,
+            context.transform.trans(10.0, 185.0),
+            graphics,
+        ).unwrap();
+        text(
+            color::WHITE,
+            20,
+            format!("Mutation Rate: {}%", config::MUTATION_RATE * 100.0).as_str(),
+            glyph_cache,
+            context.transform.trans(10.0, 205.0),
             graphics,
         ).unwrap();
     }
@@ -142,10 +218,19 @@ impl Simulation {
         self.cities.clear();
 
         let mut rng = thread_rng();
-        for _ in 0..config::LOCATION_SIZE {
+        loop {
             let r_x: f64 = rng.gen_range(0, config::WINDOW_SIZE.width) as f64;
             let r_y: f64 = rng.gen_range(0, config::WINDOW_SIZE.height) as f64;
+
+            if r_x < 225.0 && r_y < 215.0 {
+                continue;
+            }
+
             self.cities.push(Location { x: r_x, y: r_y});
+
+            if self.cities.len() == config::LOCATION_SIZE {
+                break;
+            }
         }
 
         utils::create_file();

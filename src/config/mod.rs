@@ -24,3 +24,5 @@ pub enum SelectionAlgorithm {
 pub static mut SELECTION_ALGORITHM_X: SelectionAlgorithm = SelectionAlgorithm::Tournament;
 
 pub static mut ELITISM: usize = 1;
+
+pub static mut BENCH_MODE: bool = true;
