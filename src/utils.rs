@@ -1,9 +1,9 @@
 use config;
 use std::error::Error;
-use std::io::prelude::*;
 use std::fs::File;
-use std::path::Path;
 use std::fs::OpenOptions;
+use std::io::prelude::*;
+use std::path::Path;
 
 pub fn debug(string: &str) {
     if config::DEBUG {
@@ -30,9 +30,7 @@ pub fn create_file() {
     let display = path.display();
 
     match File::create(&path) {
-        Err(why) => panic!("couldn't create {}: {}",
-            display,
-            why.description()),
+        Err(why) => panic!("couldn't create {}: {}", display, why.description()),
         Ok(file) => file,
     };
 }

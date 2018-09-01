@@ -1,8 +1,8 @@
-extern crate rand;
 extern crate quickersort;
+extern crate rand;
 
 use config;
-use simulation::models::{location::Location, individual::Individual};
+use simulation::models::{individual::Individual, location::Location};
 
 #[derive(Clone)]
 pub struct Population {
@@ -71,7 +71,7 @@ impl Population {
     pub fn get_individuals(&mut self) -> Vec<Individual> {
         let mut tmp: Vec<Individual> = Vec::new();
         assert_eq!(tmp.len(), 0);
-        
+
         for i in 0..config::POP_SIZE {
             tmp.push(self.individuals[i]);
         }

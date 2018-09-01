@@ -17,7 +17,7 @@ impl Mutation {
 
                     if c1 != _c2 {
                         break;
-                    }            
+                    }
                 }
 
                 let loc1 = ind.get_location(c1);

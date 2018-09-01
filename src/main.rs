@@ -1,17 +1,17 @@
+extern crate num;
 extern crate opengl_graphics;
 extern crate piston_window;
-extern crate rand;
-extern crate num;
 extern crate quickersort;
+extern crate rand;
 
-use piston_window::{OpenGL, PistonWindow, WindowSettings};
 use opengl_graphics::GlGraphics;
+use piston_window::{OpenGL, PistonWindow, WindowSettings};
 
 mod config;
 mod ga;
 mod menu;
-mod simulation;
 mod population;
+mod simulation;
 mod utils;
 
 fn main() {
@@ -32,5 +32,4 @@ fn main() {
     let mut gl = GlGraphics::new(opengl);
 
     menu::run(&mut window, &mut gl);
-
 }

@@ -1,6 +1,6 @@
-use simulation::models::individual::Individual;
-use population::Population;
 use config;
+use population::Population;
+use simulation::models::individual::Individual;
 use utils;
 mod select;
 use self::select::Select;
@@ -20,7 +20,10 @@ impl GA {
         unsafe {
             if config::ELITISM > 0 {
                 individuals.clear();
-                individuals = Select::elitism(&old_individuals, (config::POP_SIZE as f64 * (config::ELITISM as f64 / 100.0)) as usize);
+                individuals = Select::elitism(
+                    &old_individuals,
+                    (config::POP_SIZE as f64 * (config::ELITISM as f64 / 100.0)) as usize,
+                );
             }
         }
 
@@ -34,7 +37,7 @@ impl GA {
                             min_fitness = old_individuals[i].fitness
                         }
                     }
-                },
+                }
                 _ => {}
             }
         }
@@ -48,11 +51,11 @@ impl GA {
                     config::SelectionAlgorithm::Tournament => {
                         p1 = Select::tour(&old_individuals);
                         p2 = Select::tour(&old_individuals);
-                    },
+                    }
                     config::SelectionAlgorithm::Roulette => {
                         p1 = Select::roulette(&old_individuals, min_fitness);
                         p2 = Select::roulette(&old_individuals, min_fitness);
-                    },
+                    }
                     config::SelectionAlgorithm::Random => {
                         let tmp: Individual = Individual::new();
                         p1 = Select::random(&old_individuals, tmp);

@@ -3,7 +3,7 @@ use piston_window::Size;
 pub mod color;
 pub mod font;
 
-pub const WINDOW_SIZE : Size = Size {
+pub const WINDOW_SIZE: Size = Size {
     width: 1280,
     height: 720,
 };
@@ -19,7 +19,7 @@ pub const POP_SIZE: usize = 200;
 pub enum SelectionAlgorithm {
     Tournament,
     Roulette,
-    Random
+    Random,
 }
 pub static mut SELECTION_ALGORITHM_X: SelectionAlgorithm = SelectionAlgorithm::Tournament;
 

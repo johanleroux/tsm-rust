@@ -17,7 +17,7 @@ impl Select {
                 }
                 tmp = individuals[rng.gen_range(0, config::POP_SIZE - 1)];
             }
-            
+
             if tmp.fitness() < candidate.fitness() {
                 candidate = tmp;
             }
@@ -28,7 +28,7 @@ impl Select {
 
     pub fn roulette(individuals: &Vec<Individual>, min_fitness: f64) -> Individual {
         let mut rng = thread_rng();
-        
+
         let mut sum_of_probability: f64 = 0.0;
         for i in 1..config::POP_SIZE {
             sum_of_probability += Select::probability(min_fitness, individuals[i].fitness);
@@ -38,13 +38,13 @@ impl Select {
 
         for i in 1..config::POP_SIZE {
             r -= Select::probability(min_fitness, individuals[i].fitness);
-            
+
             if r < 0.0 {
-                return individuals[i]
+                return individuals[i];
             }
         }
-        
-        return individuals[config::POP_SIZE - 1]
+
+        return individuals[config::POP_SIZE - 1];
     }
 
     fn probability(min_fitness: f64, cur_fitness: f64) -> f64 {
@@ -54,7 +54,7 @@ impl Select {
     pub fn random(individuals: &Vec<Individual>, other: Individual) -> Individual {
         let mut rng = thread_rng();
         let mut candidate: Individual;
-        
+
         loop {
             candidate = individuals[rng.gen_range(0, config::POP_SIZE - 1)];
 

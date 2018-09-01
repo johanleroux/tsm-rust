@@ -1,13 +1,16 @@
 use opengl_graphics::{GlGraphics, GlyphCache};
-use piston_window::{clear, text, rectangle, Button, Context, Key, PistonWindow, EventLoop, EventSettings, PressEvent, RenderEvent, Transformed, UpdateEvent};
+use piston_window::{
+    clear, rectangle, text, Button, Context, EventLoop, EventSettings, Key, PistonWindow,
+    PressEvent, RenderEvent, Transformed, UpdateEvent,
+};
 use rand::prelude::*;
 pub mod models;
-use config::color;
+use self::models::{individual::Individual, location::Location, Drawable};
 use config;
-use self::models::{location::Location, individual::Individual, Drawable};
+use config::color;
 use ga;
-use utils;
 use population::Population;
+use utils;
 
 #[derive(Clone)]
 pub struct Simulation {
@@ -17,7 +20,7 @@ pub struct Simulation {
     best_fitness: f64,
     best_individual: Individual,
     population: Population,
-    stuck_generations: u32
+    stuck_generations: u32,
 }
 
 impl Simulation {
@@ -29,11 +32,16 @@ impl Simulation {
             best_fitness: 0.0,
             best_individual: Individual::new(),
             population: Population::new(),
-            stuck_generations: 0
+            stuck_generations: 0,
         }
     }
 
-    pub fn run(&mut self, window: &mut PistonWindow, opengl: &mut GlGraphics, glyph_cache: &mut GlyphCache) {
+    pub fn run(
+        &mut self,
+        window: &mut PistonWindow,
+        opengl: &mut GlGraphics,
+        glyph_cache: &mut GlyphCache,
+    ) {
         let mut settings: EventSettings = EventSettings::new();
         unsafe {
             if config::BENCH_MODE {
@@ -47,11 +55,8 @@ impl Simulation {
                 settings.set_ups_reset(2);
                 settings.set_bench_mode(false);
             }
-
         }
-        window.set_event_settings(
-            settings
-        );
+        window.set_event_settings(settings);
 
         println!("Max FPS: {} ", window.get_event_settings().max_fps);
         println!("UPS: {} ", window.get_event_settings().ups);
@@ -87,7 +92,13 @@ impl Simulation {
                     self.best_fitness = self.best_individual.fitness;
                     self.avg_fitness = self.population.avg_fitness();
 
-                    let line = format!("{},{},{},{}", self.generation, self.best_individual.fitness, self.population.avg_fitness(), self.population.median_fitness());
+                    let line = format!(
+                        "{},{},{},{}",
+                        self.generation,
+                        self.best_individual.fitness,
+                        self.population.avg_fitness(),
+                        self.population.median_fitness()
+                    );
                     utils::write_to_file(line, true);
                 }
             }
@@ -149,7 +160,7 @@ impl Simulation {
             match config::SELECTION_ALGORITHM_X {
                 config::SelectionAlgorithm::Tournament => {
                     selection = "Tournament".to_string();
-                },
+                }
                 config::SelectionAlgorithm::Roulette => {
                     selection = "Roulette".to_string();
                 }
@@ -226,7 +237,7 @@ impl Simulation {
                 continue;
             }
 
-            self.cities.push(Location { x: r_x, y: r_y});
+            self.cities.push(Location { x: r_x, y: r_y });
 
             if self.cities.len() == config::LOCATION_SIZE {
                 break;
@@ -243,7 +254,13 @@ impl Simulation {
         self.best_fitness = self.best_individual.fitness;
         self.avg_fitness = self.population.avg_fitness();
 
-        line = format!("{},{},{},{}", self.generation, self.best_individual.fitness, self.population.avg_fitness(), self.population.median_fitness());
+        line = format!(
+            "{},{},{},{}",
+            self.generation,
+            self.best_individual.fitness,
+            self.population.avg_fitness(),
+            self.population.median_fitness()
+        );
         utils::write_to_file(line, true);
     }
 }

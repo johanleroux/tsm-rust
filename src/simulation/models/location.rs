@@ -1,8 +1,8 @@
 use opengl_graphics::GlGraphics;
 use piston_window::{rectangle, types, Context, Transformed};
 
-use num;
 use config::color;
+use num;
 use simulation::models::Drawable;
 
 #[derive(Copy, Clone)]
@@ -14,9 +14,7 @@ pub struct Location {
 impl Location {
     #[inline]
     pub fn new() -> Self {
-        Location {
-            x: -1.0, y: -1.0
-        }
+        Location { x: -1.0, y: -1.0 }
     }
 
     pub fn distance(&self, location: Location) -> f64 {
