@@ -79,9 +79,11 @@ impl GA {
         pop.set_individuals(individuals);
 
         utils::debug("Loop through population for mutation");
-        for i in 0..config::POP_SIZE {
-            let individual = pop.get_individual(i);
-            pop.set_individual(i, Mutation::mutate(individual));
+        unsafe {
+            for i in (config::POP_SIZE as f64 * (config::ELITISM as f64 / 100.0)) as usize..config::POP_SIZE {
+                let individual = pop.get_individual(i);
+                pop.set_individual(i, Mutation::mutate(individual));
+            }
         }
 
         pop
