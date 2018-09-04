@@ -73,7 +73,7 @@ impl Simulation {
             }
 
             if let Some(_args) = event.update_args() {
-                if self.stuck_generations < 25 {
+                if self.stuck_generations < 50 {
                     self.generation += 1;
 
                     let mut individuals = self.population.get_individuals();
