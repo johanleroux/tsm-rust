@@ -100,6 +100,8 @@ impl Simulation {
                         self.population.median_fitness()
                     );
                     utils::write_to_file(line, true);
+                } else {
+                    utils::complete_file(self.best_fitness);
                 }
             }
 

@@ -1,6 +1,7 @@
 use config;
 use simulation::models::location::Location;
 use std::error::Error;
+use std::fs;
 use std::fs::File;
 use std::fs::OpenOptions;
 use std::io::prelude::*;
@@ -14,7 +15,7 @@ pub fn debug(string: &str) {
 }
 
 pub fn write_to_file(line: String, append: bool) {
-    let file_name = utils::file_name();
+    let file_name = utils::file_name(0.0);
     let path = Path::new(&file_name);
 
     let mut file = OpenOptions::new()
@@ -29,7 +30,7 @@ pub fn write_to_file(line: String, append: bool) {
 }
 
 pub fn create_file() {
-    let file_name = utils::file_name();
+    let file_name = utils::file_name(0.0);
     let path = Path::new(&file_name);
     let display = path.display();
 
@@ -39,7 +40,18 @@ pub fn create_file() {
     };
 }
 
-pub fn file_name() -> String {
+pub fn complete_file(fitness: f64) {
+    let file_name = utils::file_name(0.0);
+    let path = Path::new(&file_name);
+    if Path::new(path).exists() {
+        match fs::rename(utils::file_name(0.0), utils::file_name(fitness)) {
+            Err(why) => panic!("couldn't rename file: {}", why.description()),
+            Ok(file) => file
+        }
+    }
+}
+
+pub fn file_name(fitness: f64) -> String {
     let mut data_type = "test";
 
     if !config::TEST_DATA {
@@ -60,13 +72,19 @@ pub fn file_name() -> String {
             }
         }
     }
+    let elitism;
+    unsafe {
+        elitism = config::ELITISM;
+    }
 
     return format!(
-        "target/{}_{}_loc{}_pop{}.csv",
+        "target/{}_{}_elt{}_loc{}_pop{}_fit{:.02}.csv",
         data_type,
         selection,
+        elitism,
         config::LOCATION_SIZE,
-        config::POP_SIZE
+        config::POP_SIZE,
+        fitness
     );
 }
 
