@@ -19,7 +19,7 @@ impl Population {
     }
 
     pub fn init(&mut self, locations: &Vec<Location>) {
-        assert_eq!(self.individuals.len(), 0);
+        self.individuals.clear();
 
         for _ in 0..config::POP_SIZE {
             let mut individual = Individual::new();

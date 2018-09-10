@@ -21,6 +21,7 @@ pub struct Simulation {
     best_individual: Individual,
     population: Population,
     stuck_generations: u32,
+    test_runs: u32,
 }
 
 impl Simulation {
@@ -33,6 +34,7 @@ impl Simulation {
             best_individual: Individual::new(),
             population: Population::new(),
             stuck_generations: 0,
+            test_runs: 1,
         }
     }
 
@@ -52,7 +54,7 @@ impl Simulation {
             } else {
                 settings.set_max_fps(64);
                 settings.set_ups(64);
-                settings.set_ups_reset(2);
+                settings.set_ups_reset(0);
                 settings.set_bench_mode(false);
             }
         }
@@ -73,7 +75,7 @@ impl Simulation {
             }
 
             if let Some(_args) = event.update_args() {
-                if self.stuck_generations < 50 {
+                if self.stuck_generations < 15 {
                     self.generation += 1;
 
                     let mut individuals = self.population.get_individuals();
@@ -102,6 +104,13 @@ impl Simulation {
                     utils::write_to_file(line, true);
                 } else {
                     utils::complete_file(self.best_fitness);
+
+                    if config::TEST_DATA && self.test_runs < config::TEST_RUNS {
+                        self.test_runs += 1;
+                        self.stuck_generations = 0;
+                        self.init();
+                    }
+
                 }
             }
 
@@ -253,7 +262,7 @@ impl Simulation {
         }
 
         utils::create_file();
-        let mut line = format!("gen,high,avg,med");
+        let mut line = format!("gen,best,avg,med");
         utils::write_to_file(line, false);
 
         self.generation = 1;

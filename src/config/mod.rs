@@ -11,6 +11,7 @@ pub const WINDOW_SIZE: Size = Size {
 pub const DEBUG: bool = false;
 
 pub const TEST_DATA: bool = true;
+pub const TEST_RUNS: u32 = 10;
 
 pub const MUTATION_RATE: f32 = 0.015;
 
