@@ -74,7 +74,7 @@ impl Select {
             tmp_individuals.push(old_individuals[i])
         }
 
-        tmp_individuals.sort_by(|a, b| a.fitness.partial_cmp(&b.fitness).unwrap().reverse());
+        tmp_individuals.sort_by(|a, b| a.fitness.partial_cmp(&b.fitness).unwrap());
 
         for i in 0..limit {
             candidates.push(tmp_individuals[i])
